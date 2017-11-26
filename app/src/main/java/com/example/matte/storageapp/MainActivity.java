@@ -40,38 +40,40 @@ public class MainActivity extends ListActivity {
     });
 
 
-    public void Write(){
+    public void Write() {
         FileWriter filewriter = null;
         BufferedWriter out = null;
-        try {
-            File file1 = new File(Environment.getExternalStorageDirectory() + File.separator +"StorageApp"+ File.separator);
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator +"StorageApp"+ File.separator + "shop1.txt");
-            file1.mkdirs();
-            if(!file.exists()) {
-                if(file.createNewFile()){
-                    filewriter = new FileWriter(file);
-                    out = new BufferedWriter(filewriter);
-                    for(i=0;i<shop.length;i++){
-                    out.write(shop[i]+"\n");}
-                    out.flush();
-                    out.close();
-                }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            try {
+                File file1 = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator);
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
+                file1.mkdirs();
+                if (!file.exists()) {
+                    if (file.createNewFile()) {
+                        filewriter = new FileWriter(file);
+                        out = new BufferedWriter(filewriter);
+                        for (i = 0; i < shop.length; i++) {
+                            out.write(shop[i] + "\n");
+                        }
+                        out.flush();
+                        out.close();
+                    }
 
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally{
-            if(out != null) try {
-                out.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            if(filewriter != null) try {
-                filewriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } finally {
+                if (out != null) try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (filewriter != null) try {
+                    filewriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -79,31 +81,33 @@ public class MainActivity extends ListActivity {
     public void Read() {
         FileReader reader = null;
         BufferedReader br = null;
-        int i=0;
-        try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
-            if(file.exists()) {
-                reader = new FileReader(file);
-                br = new BufferedReader(reader);
-                String line;
-                while ((line = br.readLine()) != null) {
-                shop1[i]=line;
-                i++;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            int i = 0;
+            try {
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
+                if (file.exists()) {
+                    reader = new FileReader(file);
+                    br = new BufferedReader(reader);
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        shop1[i] = line;
+                        i++;
+                    }
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally{
-            if(br != null) try {
-                br.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            if(reader != null) try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } finally {
+                if (br != null) try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (reader != null) try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
