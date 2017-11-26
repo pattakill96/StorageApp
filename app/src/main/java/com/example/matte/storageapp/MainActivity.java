@@ -26,25 +26,35 @@ public class MainActivity extends ListActivity {
     public String[] shop1={"","",""};
     public int i=0,p1=0,p2=0;
 
-
-    public void getString(){
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED){
-            shop[0]="NOPE";
+    Thread fileW = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Write();
         }
+    });
+    Thread fileR = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Read();
+        }
+    });
+
+
+    public void Write(){
         FileWriter filewriter = null;
         BufferedWriter out = null;
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "shop1.txt");
+            File file1 = new File(Environment.getExternalStorageDirectory() + File.separator +"StorageApp"+ File.separator);
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator +"StorageApp"+ File.separator + "shop1.txt");
+            file1.mkdirs();
             if(!file.exists()) {
-                shop[1]="siamo dentro";
                 if(file.createNewFile()){
                     filewriter = new FileWriter(file);
                     out = new BufferedWriter(filewriter);
                     for(i=0;i<shop.length;i++){
                     out.write(shop[i]+"\n");}
                     out.flush();
+                    out.close();
                 }
 
             }
@@ -66,23 +76,13 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    public void setString() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED){
-            p2 = 1;
-        }
-        if(p2==0){
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    0);
-        }
+    public void Read() {
         FileReader reader = null;
         BufferedReader br = null;
         int i=0;
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "shop1.txt");
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
             if(file.exists()) {
-                //shop[0]="evviva";
                 reader = new FileReader(file);
                 br = new BufferedReader(reader);
                 String line;
@@ -110,11 +110,11 @@ public class MainActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.getString();
-        this.setString();
+        fileW.start();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fileR.start();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getListView().getContext(), android.R.layout.simple_list_item_1, shop1);
         getListView().setAdapter(adapter);
 
