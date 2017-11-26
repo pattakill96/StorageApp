@@ -1,13 +1,13 @@
 package com.example.matte.storageapp;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -23,49 +23,27 @@ import java.io.IOException;
 
 public class MainActivity extends ListActivity {
     public String[] shop ={"ff","ffff","ffffff"};
-    public String[] shop1={};
-    int i=0;
+    public String[] shop1={"","",""};
+    public int i=0,p1=0,p2=0;
 
 
     public void getString(){
-        /* PERMISSIONS ON RUNTIME
-        * // Here, thisActivity is the current activity
-if (ContextCompat.checkSelfPermission(thisActivity,
-                Manifest.permission.READ_CONTACTS)
-        != PackageManager.PERMISSION_GRANTED) {
 
-    // Should we show an explanation?
-    if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
-            Manifest.permission.READ_CONTACTS)) {
-
-        // Show an explanation to the user *asynchronously* -- don't block
-        // this thread waiting for the user's response! After the user
-        // sees the explanation, try again to request the permission.
-
-    } else {
-
-        // No explanation needed, we can request the permission.
-
-        ActivityCompat.requestPermissions(thisActivity,
-                new String[]{Manifest.permission.READ_CONTACTS},
-                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-        // app-defined int constant. The callback method gets the
-        // result of the request.
-    }
-}*/
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED){
+            shop[0]="NOPE";
+        }
         FileWriter filewriter = null;
         BufferedWriter out = null;
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "shop.txt");
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "shop1.txt");
             if(!file.exists()) {
                 shop[1]="siamo dentro";
                 if(file.createNewFile()){
                     filewriter = new FileWriter(file);
                     out = new BufferedWriter(filewriter);
-                    out.write(shop[i]);
-                    i++;
+                    for(i=0;i<shop.length;i++){
+                    out.write(shop[i]+"\n");}
                     out.flush();
                 }
 
@@ -89,13 +67,22 @@ if (ContextCompat.checkSelfPermission(thisActivity,
     }
 
     public void setString() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED){
+            p2 = 1;
+        }
+        if(p2==0){
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    0);
+        }
         FileReader reader = null;
         BufferedReader br = null;
         int i=0;
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "test.txt");
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "shop1.txt");
             if(file.exists()) {
-                shop[0]="evviva";
+                //shop[0]="evviva";
                 reader = new FileReader(file);
                 br = new BufferedReader(reader);
                 String line;
