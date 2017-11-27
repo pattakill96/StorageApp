@@ -2,9 +2,11 @@ package com.example.matte.storageapp;
 
 import android.Manifest;
 import android.app.ListActivity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -22,8 +24,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class MainActivity extends ListActivity {
-    public String[] shop ={"ff","ffff","ffffff"};
-    public String[] shop1={"","",""};
+    public String[] shop ={"ff","ffff","ffffff","ff","ffff","ffffff","ff","ffff","ffffff","ff","ffff","ffffff","ff","ffff","ffffff","ff","ffff","ffffff"};
+    public String[] shop1={"","","","","","","","","","","","","","","","","",""};
     public int i=0,p1=0,p2=0;
 
     Thread fileW = new Thread(new Runnable() {
@@ -41,75 +43,15 @@ public class MainActivity extends ListActivity {
 
 
     public void Write() {
-        FileWriter filewriter = null;
-        BufferedWriter out = null;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            try {
-                File file1 = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator);
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
-                file1.mkdirs();
-                if (!file.exists()) {
-                    if (file.createNewFile()) {
-                        filewriter = new FileWriter(file);
-                        out = new BufferedWriter(filewriter);
-                        for (i = 0; i < shop.length; i++) {
-                            out.write(shop[i] + "\n");
-                        }
-                        out.flush();
-                        out.close();
-                    }
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (out != null) try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (filewriter != null) try {
-                    filewriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("shops","si vola");
+        editor.apply();
     }
 
     public void Read() {
-        FileReader reader = null;
-        BufferedReader br = null;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            int i = 0;
-            try {
-                File file = new File(Environment.getExternalStorageDirectory() + File.separator + "StorageApp" + File.separator + "shop1.txt");
-                if (file.exists()) {
-                    reader = new FileReader(file);
-                    br = new BufferedReader(reader);
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        shop1[i] = line;
-                        i++;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (reader != null) try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        shop1[0] = preferences.getString("shops",null);
     }
 
     @Override
